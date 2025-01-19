@@ -6,7 +6,7 @@ pipeline {
      }
 
     parameters {
-        string(name: 'EXECUTOR', defaultValue: '', description: 'Miguel Gandia Jordá')
+        string(name: 'EXECUTOR', defaultValue: '', description: 'miganjo99')
         string(name: 'MOTIVO', defaultValue: '', description: 'pipeline de Jenkins')
         string(name: 'CHAT_ID', defaultValue: '', description: 'Chat ID de Telegram')
     }
@@ -91,6 +91,34 @@ pipeline {
                     }
                }
           }
+        
+
+        stage('Push_Changes') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
+                        echo "Realizando el push al repositorio remoto..."
+
+                        def pushResult = sh(
+                            script: """
+                            chmod 600 $SSH_KEY
+                            eval \$(ssh-agent -s)
+                            ssh-add $SSH_KEY
+                            sh ./misScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
+                            """,
+                            returnStatus: true
+                        )
+
+                        // Validar el resultado
+                        if (pushResult != 0) {
+                            error "El push falló. Revisa el log para más detalles."
+                        } else {
+                            echo "Cambios enviados exitosamente al repositorio remoto."
+                        }
+                    }
+                }
+            }
+        }
 
 
     }
