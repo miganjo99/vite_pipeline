@@ -18,7 +18,12 @@ git checkout branch_pipeline || git checkout -b branch_pipeline
 git add README.md
 git commit -m "${COMMIT_MSG}" || echo "Nada que commitear."
 
-# Intentar hacer push, si falla, hacer pull con rebase y luego push
+# Iniciar ssh-agent para asegurar que la clave SSH esté disponible
+eval $(ssh-agent -s)
+ssh-add /var/jenkins_home/.ssh/id_rsa
+
+# Intentar hacer push
+echo "Haciendo push a la rama branch_pipeline..."
 git push origin branch_pipeline || {
     echo "Error al hacer push. Intentando hacer pull con rebase..."
     git pull --rebase origin branch_pipeline
