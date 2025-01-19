@@ -17,10 +17,10 @@ git add README.md
 
 git commit -m "${COMMIT_MSG}" || echo "Nada que commitear."
 
-git push origin HEAD:branch_pipeline || {
+git push origin branch_pipeline || {
     echo "Error al hacer push. Intentando hacer pull con rebase..."
     git pull --rebase origin branch_pipeline
-    git push origin HEAD:branch_pipeline
+    git push origin branch_pipeline
 }
 
 exit 0
