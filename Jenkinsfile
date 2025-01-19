@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+          nodejs "Node" 
+     }
+
     parameters {
         string(name: 'EXECUTOR', defaultValue: '', description: 'Miguel Gandia Jordá')
         string(name: 'MOTIVO', defaultValue: '', description: 'pipeline de Jenkins')
