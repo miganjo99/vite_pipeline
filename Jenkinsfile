@@ -109,7 +109,7 @@ pipeline {
                             eval \$(ssh-agent -s)
                             ssh-add /tmp/ssh_key
                             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-                            sh ./jenkinsScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
+                            sh ./misScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
                             """,
                             returnStatus: true
                         )
