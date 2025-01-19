@@ -10,11 +10,27 @@ ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 git config --global user.name "Jenkins Pipeline"
 git config --global user.email "jenkins@pipeline.local"
 
-# Asegúrate de estar en la rama correcta
-git fetch origin
-git checkout branch_pipeline || git checkout -b branch_pipeline
+# Verificar si ya hay cambios sin confirmar
+if ! git diff --quiet; then
+  echo "Hay cambios sin confirmar, realizaremos un commit..."
+  git add .
+  git commit -m "${COMMIT_MSG}"
+else
+  echo "No hay cambios que confirmar."
+fi
 
-# Agregar archivos y hacer commit
+# Asegurarse de que estamos en la rama branch_pipeline
+git fetch origin
+
+# Si ya estamos en la rama correcta, no hacemos nada
+current_branch=$(git symbolic-ref --short HEAD)
+
+if [ "$current_branch" != "branch_pipeline" ]; then
+  echo "Cambiando a la rama branch_pipeline..."
+  git checkout branch_pipeline
+fi
+
+# Agregar archivos y hacer commit en la rama correcta
 git add README.md
 git commit -m "${COMMIT_MSG}" || echo "Nada que commitear."
 
