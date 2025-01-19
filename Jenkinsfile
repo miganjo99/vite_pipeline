@@ -99,19 +99,19 @@ pipeline {
                     withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
                         echo "Realizando el push al repositorio remoto..."
                         
-                        // Crear directorio si no existe
-                        sh 'mkdir -p $HOME/.ssh'
+                        def sshDir = '/var/jenkins_home/.ssh' // 'C:/ProgramData/Jenkins/.ssh'
                         
-                        // Crear el archivo temporal con la clave SSH
-                        writeFile file: "$HOME/.ssh/id_rsa", text: SSH_KEY
+                        sh "mkdir -p ${sshDir}"
+                        
+                        writeFile file: "${sshDir}/id_rsa", text: SSH_KEY
                         
                         // Ajustar permisos y realizar el push
                         def pushResult = sh(
                             script: """
-                            chmod 600 $HOME/.ssh/id_rsa
+                            chmod 600 ${sshDir}/id_rsa
                             eval \$(ssh-agent -s)
-                            ssh-add $HOME/.ssh/id_rsa
-                            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                            ssh-add ${sshDir}/id_rsa
+                            ssh-keyscan -t rsa github.com >> ${sshDir}/known_hosts
                             sh ./misScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
                             """,
                             returnStatus: true
@@ -124,6 +124,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
