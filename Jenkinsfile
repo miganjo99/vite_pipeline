@@ -7,6 +7,10 @@ pipeline {
         string(name: 'CHAT_ID', defaultValue: '', description: 'Chat ID de Telegram')
     }
 
+    tools {
+        nodejs "Node" 
+    }
+
     stages {
         stage('Hello World') {
             steps {
