@@ -66,5 +66,32 @@ pipeline {
                     }
                }
           }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Update_Readme') {
+               steps {
+                    script {
+                         def testResult = readFile('test_result.txt').trim()
+
+                         echo "Actualizando el README.md  (${testResult})..."
+
+                         sh """
+                         echo "resultado de updatear el readme:${testResult}..."
+                         node ./misScripts/updateReadme.js ${testResult}
+                         """
+
+                         writeFile file: 'update_result.txt', text: 'Correcto'
+                    }
+               }
+          }
+
+
     }
 }
