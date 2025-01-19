@@ -1,16 +1,14 @@
 #!/bin/sh
 
-# Variables de entrada
-EXECUTOR="$1"
-MOTIVO="$2"
+
 
 # Personalizar el mensaje del commit
-COMMIT_MSG="Pipeline ejecutada por ${EXECUTOR}. Motivo: ${MOTIVO}"
+COMMIT_MSG="Pipeline ejecutado por miguel "
 
 # Configurar el acceso a GitHub
 ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-git config --global user.name "${EXECUTOR}"
+git config --global user.name "Jenkins Pipeline"
 git config --global user.email "jenkins@pipeline.local"
 
 git add README.md
