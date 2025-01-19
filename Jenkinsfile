@@ -93,6 +93,7 @@ pipeline {
           }
         
 
+
         stage('Push_Changes') {
             steps {
                 script {
@@ -101,7 +102,7 @@ pipeline {
 
                         def localSshKeyPath = '/c/Users/Miguel/.ssh/id_rsa'
 
-                        def sshDir = '/var/jenkins_home/.ssh' // O la ruta correcta en tu contenedor
+                        def sshDir = '/var/jenkins_home/.ssh' 
                         def sshKeyPath = "${sshDir}/id_rsa"
 
                         sh """
@@ -111,6 +112,11 @@ pipeline {
                             eval \$(ssh-agent -s)
                             ssh-add ${sshKeyPath}
                             ssh-keyscan -t rsa github.com >> ${sshDir}/known_hosts
+
+                            # Configura el nombre y correo para git
+                            git config --global user.name "Jenkins Pipeline"
+                            git config --global user.email "jenkins@pipeline.local"
+
                             sh ./misScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
                         """
                     }
