@@ -21,11 +21,11 @@ pipeline {
             steps {
                 script {
                     echo "Install depemdencies..."
-                    sh 'npm install'
+                    bat 'npm install'
                     echo "Install CLI de Vercel..."
-                    sh 'npm install -g vercel'
+                    bat 'npm install -g vercel'
                     echo "Verificant la CLI de Vercel..."
-                    sh 'vercel --version'
+                    bat 'vercel --version'
                 }
             }
         }
