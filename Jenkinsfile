@@ -98,32 +98,26 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-stage-key', keyFileVariable: 'SSH_KEY')]) {
                         echo "Realizando el push al repositorio remoto..."
-                        
-                        def sshDir = '/var/jenkins_home/.ssh' // 'C:/ProgramData/Jenkins/.ssh'
-                        
-                        sh "mkdir -p ${sshDir}"
-                        
-                        writeFile file: "${sshDir}/id_rsa", text: SSH_KEY
-                        
-                        // Ajustar permisos y realizar el push
-                        def pushResult = sh(
-                            script: """
-                            chmod 600 ${sshDir}/id_rsa
+
+                        def localSshKeyPath = '/c/Users/Miguel/.ssh/id_rsa'
+
+                        def sshDir = '/var/jenkins_home/.ssh' // O la ruta correcta en tu contenedor
+                        def sshKeyPath = "${sshDir}/id_rsa"
+
+                        sh """
+                            mkdir -p ${sshDir}
+                            cp ${localSshKeyPath} ${sshKeyPath}
+                            chmod 600 ${sshKeyPath}
                             eval \$(ssh-agent -s)
-                            ssh-add ${sshDir}/id_rsa
+                            ssh-add ${sshKeyPath}
                             ssh-keyscan -t rsa github.com >> ${sshDir}/known_hosts
                             sh ./misScripts/pushChanges.sh '${params.EXECUTOR}' '${params.MOTIVO}'
-                            """,
-                            returnStatus: true
-                        )
-                        
-                        if (pushResult != 0) {
-                            error "El push falló. Revisa el log para más detalles."
-                        }
+                        """
                     }
                 }
             }
         }
+
 
 
 
