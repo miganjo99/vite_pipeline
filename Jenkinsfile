@@ -34,5 +34,37 @@ pipeline {
                 }
             }
         }
+
+         stage('Linter') {
+               steps {
+                    script {
+                         def lintResult = sh script: 'npx eslint .', returnStatus: true
+
+                         if (lintResult != 0) {
+                              writeFile file: 'result_lint.txt', text: 'Error'
+                              error "ERROR en el linter"
+                         } else {
+                              writeFile file: 'result_lint.txt', text: 'Correcto'
+                         }
+                         echo "Linter correcto"
+                    }
+               }
+          }
+
+          stage('Test') {
+               steps {
+                    script {
+                         def testResult = sh(script: 'npm test', returnStatus: true)
+
+                         if (testResult != 0) {
+                              writeFile file: 'test_result.txt', text: 'Error'
+                              error "ERROR en los tests"
+                         } else {
+                              writeFile file: 'test_result.txt', text: 'Correcto'
+                         }
+                         echo "Todos los tests funcionaron correctamente."
+                    }
+               }
+          }
     }
 }
