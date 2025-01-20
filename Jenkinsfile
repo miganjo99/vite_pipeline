@@ -124,9 +124,33 @@ pipeline {
             }
         }
 
-
-
-
+        stage('Deploy to Vercel') {
+            when {
+                expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'vercel-deploy-token', variable: 'VERCEL_TOKEN')]) {
+                        echo "Iniciando el despliegue en Vercel..."
+                        def deployResult = sh(
+                            script: """
+                            chmod +x ./misScripts/deployToVercel.sh
+                            sh ./misScripts/deployToVercel.sh $VERCEL_TOKEN
+                            """,
+                            returnStatus: true
+                        )
+                        if (deployResult != 0) {
+                            writeFile file: 'deploy_to_vercel_result.txt', text: 'Error'
+                            error "El despliegue en Vercel falló. Revisa el log para más detalles."
+                        } else {
+                            writeFile file: 'deploy_to_vercel_result.txt', text: 'Correcte'
+                        }
+                    }
+                }
+            }
+        }
 
 
     }
