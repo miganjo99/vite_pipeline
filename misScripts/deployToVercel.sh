@@ -6,13 +6,9 @@ if [ -z "$VERCEL_TOKEN" ]; then
   exit 1
 fi
 
-# Autenticarse en Vercel con el token
-echo "Autenticándose en Vercel..."
-vercel login --token "$VERCEL_TOKEN"
-
-# Desplegar la aplicación en Vercel
+# Desplegar la aplicación en Vercel sin necesidad de autenticación previa
 echo "Desplegando la aplicación en Vercel..."
-vercel --prod --token "$VERCEL_TOKEN"
+vercel --prod --token "$VERCEL_TOKEN" --yes
 
 # Verificar el resultado del despliegue
 if [ $? -ne 0 ]; then

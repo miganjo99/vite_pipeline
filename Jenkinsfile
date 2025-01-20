@@ -134,7 +134,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'vercel-deploy-token', variable: 'VERCEL_TOKEN')]) {
                         echo "Iniciando el despliegue en Vercel..."
-                        def deployResult = sh(
+                        def deployResult = sh(  
                             script: """
                             chmod +x ./misScripts/deployToVercel.sh
                             sh ./misScripts/deployToVercel.sh $VERCEL_TOKEN
